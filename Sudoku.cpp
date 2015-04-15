@@ -2,14 +2,14 @@
 #include"Sudoku.h"
 using namespace std;
 Sudoku::Sudoku(){
- for(int i=0;i<sudokusize;i++) {map[i]=0;
-                                answer[i]=0;}
+ for(int i=0;i<sudokusize;i++) map[i]=0;
+                                
 }
 
 Sudoku::Sudoku(const int intput_map[]){
 int i;
-for(i=0;i<sudokusize;i++) {map[i]=intput_map[i];
-                           answer[i]=0;}
+for(i=0;i<sudokusize;i++) map[i]=intput_map[i];
+                           
 }
 
 void Sudoku::ReadIn(){
@@ -30,19 +30,27 @@ void Sudoku::Solve(){
 Sudoku question(map);
 Sudoku answer;
 int solution=0;
-int b,i,j,count;
+int b,i,j,count,brow,bcol;
 int neg_one_block=0;
+int neg_one_block_perbrow[4]={0};
+int neg_one_block_perbcol[4]={0};
+//check [-1]block
 for(b=0;b<16;b++){
+ brow=b/4;
+ bcol=b%4;
  count=0;
  for(i=0;i<3;i++)
   for(j=0;j<3;j++)
-   if(map[3*b+12*i+j]==-1) count++;
- if(count!=9&&count!=0){cout<<0<<endl;
+   if(map[36*brow+3*bcol+12*i+j]==-1) count++;
+ if(count!=9&&count!=0){cout<<"block"<< b<<" not complete"<<endl;
                        return ;}
- else if(count==9) neg_one_block++; 
+ else if(count==9) {neg_one_block++;
+                    neg_one_block_perbrow[brow]++;
+                    neg_one_block_perbcol[bcol]++;} 
  }
-if(neg_one_block!=4) {cout<<0<<endl;
-                      return ;}
+for(i=0;i<4;i++){if(neg_one_block_perbrow[i]!=1) return;
+                 if(neg_one_block_perbcol[i]!=1) return;}
+cout<<"start solution"<<endl;
 get_solution(question,answer,solution);
 cout<<solution<<" solution"<<endl;
 answer.print_map();
@@ -100,10 +108,26 @@ if(p==-1){
  }          
 else
  for(n=1;n<10;n++) if(question.check_one_number(n,p)){question.set_map(n,p);
-                                                      get_solution(question,answer,solution);}
-
-
- 
+                                                      get_solution(question,answer,solution);} 
 }
+//void Sudoku::simplify(){
+//int n,i,j,row,col,block;
+//for(n=1;n<10;n++){
+// int temp[sudokusize]={0};
+// for(i=0;i<sudokusize;i++) {
+//   row=i/12;
+//   col=i%12;
+//   block=3*(col/3)+36*(row/3);
+//   if(map[i]==n){
+//    for(j=0;j<12;j++) temp[row*12+j]=1;
+//    for(j=0)
+//
 
+//   } 
+// }
+//}
+
+
+
+//}
 

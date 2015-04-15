@@ -6,3 +6,4 @@ test.o:test.cpp Sudoku.h
 	g++ -c test.cpp
 clean:
 	rm *.o
+	rm test
