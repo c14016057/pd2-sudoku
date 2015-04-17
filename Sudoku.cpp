@@ -1,6 +1,8 @@
 #include<iostream>
 #include"Sudoku.h"
 #include<cstdlib>
+#include<unistd.h>
+#include<ctime>
 using namespace std;
 Sudoku::Sudoku(){
  for(int i=0;i<sudokusize;i++) map[i]=0;
@@ -43,18 +45,20 @@ for(b=0;b<16;b++){
  for(i=0;i<3;i++)
   for(j=0;j<3;j++)
    if(map[36*brow+3*bcol+12*i+j]==-1) count++;
- if(count!=9&&count!=0){cout<<"block"<< b<<" not complete"<<endl;
+ if(count!=9&&count!=0){cout<<0<<endl;
                        return ;}
  else if(count==9) {neg_one_block++;
                     neg_one_block_perbrow[brow]++;
                     neg_one_block_perbcol[bcol]++;} 
  }
-for(i=0;i<4;i++){if(neg_one_block_perbrow[i]!=1) return;
-                 if(neg_one_block_perbcol[i]!=1) return;}
-cout<<"start solution"<<endl;
+for(i=0;i<4;i++){if(neg_one_block_perbrow[i]!=1) {cout<<0<<endl;
+                                                  return;}
+                 if(neg_one_block_perbcol[i]!=1) {cout<<0<<endl;
+                                                  return;}
+                }
 get_solution(question,answer,solution);
-cout<<solution<<" solution"<<endl;
-answer.print_map();
+cout<<solution<<endl;
+if(solution==1) answer.print_map();
 }
 
 int Sudoku::check_one_number(int n,int index){
@@ -107,10 +111,11 @@ p=question.get_next_zero();
 if(p==-1){
  answer=question;
  solution++;
- cout<<"answer:"<<solution<<endl;
- question.print_map();
-// if(solution>12) exit(0);
- }          
+// cout<<"answer:"<<solution<<endl;
+// question.print_map();
+ if(solution>2) {cout<<2<<endl;
+                 exit(0);}
+          }          
 else
  for(n=1;n<10;n++) if(question.check_one_number(n,p)){question.set_map(n,p);
                                                       get_solution(question,answer,solution);} 
@@ -190,12 +195,53 @@ for(k=0;k<9;k++){
                                } 
  }
 }
-if(change) simplify(); 
-//for(i=0;i<9;i++){
-// cout<<i+1<<endl;
-// for(j=0;j<12;j++){
-//  for(k=0;k<12;k++) cout<<suport_table[i*sudokusize+12*j+k]<<" ";
-//  cout<<endl;}
-//}
+if(change) simplify();
 }
-
+void Sudoku::GiveQuestion(){
+sleep(2);
+int many_solution[]={
+-1,-1,-1, 0, 0, 4, 0, 9, 0, 0, 0, 0,
+-1,-1,-1, 0, 0, 0, 0, 0, 7, 0, 1, 0,
+-1,-1,-1, 0, 0, 0, 0, 0, 0, 0, 8, 6,
+ 0, 0, 0,-1,-1,-1, 0, 0, 0, 0, 0, 0,
+ 8, 0, 0,-1,-1,-1, 0, 0, 1, 0, 0, 0,
+ 0, 0, 6,-1,-1,-1, 0, 0, 0, 4, 0, 2,
+ 0,0,0,0, 0, 0, -1, -1, -1, 0, 0, 0,
+ 0,0,0,1, 0, 0, -1, -1, -1, 0, 0, 0,
+ 0,0,0,3, 0, 0, -1, -1, -1, 0, 9, 0,
+0,0,0,0,0,0,0,6,0,-1,-1,-1,
+1,0,0,0,0,0,2,4,0,-1,-1,-1,
+3,0,0,0,0,0,0,0,0,-1,-1,-1
+};
+int one_solution[]={
+-1,-1,-1, 0, 0, 4, 0, 9, 0, 0, 0, 0,
+-1,-1,-1, 0, 0, 0, 0, 0, 7, 0, 1, 0,
+-1,-1,-1, 0, 0, 0, 0, 0, 0, 0, 8, 6,
+ 0, 0, 0,-1,-1,-1, 0, 0, 0, 0, 0, 0,
+ 8, 0, 0,-1,-1,-1, 0, 0, 1, 0, 0, 0,
+ 0, 0, 6,-1,-1,-1, 0, 0, 0, 4, 0, 2,
+ 0,0,3,0, 0, 0, -1, -1, -1, 0, 0, 0,
+ 0,4,2,1, 0, 0, -1, -1, -1, 0, 0, 0,
+ 7,0,0,3, 0, 0, -1, -1, -1, 0, 9, 0,
+0,0,0,0,0,9,0,6,0,-1,-1,-1,
+1,0,0,8,3,0,2,4,0,-1,-1,-1,
+3,0,0,5,2,0,0,0,0,-1,-1,-1
+};
+srand((int)time(NULL));
+int i,a,b,temp;
+int solution_mod=rand()%2;
+solution_mod=1;
+int change[9];
+for(i=0;i<9;i++) change[i]=i+1;
+for(i=0;i<1000;i++) {a=rand()%9;
+                     b=rand()%9;
+                     temp=change[a];
+                     change[a]=change[b];
+                     change[b]=temp;
+                    }
+if(solution_mod) for(i=0;i<sudokusize;i++) {if(one_solution[i]>0) map[i]=change[one_solution[i]-1];
+                                            else map[i]=one_solution[i];}
+else for(i=0;i<sudokusize;i++) {if(many_solution[i]>0) map[i]=change[many_solution[i]-1];
+                                            else map[i]=many_solution[i];}
+print_map();
+}
