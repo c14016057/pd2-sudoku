@@ -198,7 +198,7 @@ for(k=0;k<9;k++){
 if(change) simplify();
 }
 void Sudoku::GiveQuestion(){
-sleep(2);
+sleep(1);
 int many_solution[]={
 -1,-1,-1, 0, 0, 4, 0, 9, 0, 0, 0, 0,
 -1,-1,-1, 0, 0, 0, 0, 0, 7, 0, 1, 0,
